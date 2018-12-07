@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+
+const download = require('download-git-repo')
+const program = require('commander')
+const chalk = require('chalk')
+const ora = require('ora')
+const path = require('path')
+
+/**
+ * Usage.
+ */
+
+program
+	.usage('<template-name> [project-name]')
+	.option('-c, --clone', 'use git clone')
+	.option('--offline', 'use cached template')
+
+program.on('--help', () => {
+	console.log('  Examples:')
+	console.log()
+	console.log(chalk.gray('    # create a new project with an template'))
+	console.log('    $ fes init pos_seed my-project')
+	console.log()
+	console.log(chalk.gray('    # create a new project straight from a github template'))
+	// console.log('    $ fes init username/repo my-project')
+	console.log()
+})
+
+/**
+ * Help.
+ */
+
+function help () {
+	program.parse(process.argv)
+	if (program.args.length < 1) {
+		program.help()
+	}
+}
+help()
+
+let [ template, rawName ] = program.args
+
+if (!rawName) {
+	console.log('Please enter your project name')
+	return
+}
+
+// git 仓库下载地址
+const officialTemplate = 'feseed/' + template
+const localUrl = path(process.cwd(), rawName)
+
+console.log()
+process.on('exit', () => {
+	console.log()
+})
+
+// 开始下载前端种子项目
+actionDownloadFESeed(officialTemplate)
+
+function actionDownloadFESeed (downloadUrl) {
+	const spinner = ora('downloading FE seed')
+	spinner.start()
+	download(downloadUrl, localUrl, {}, err => {
+		spinner.stop()
+		if (err) {
+			console.error('error: ', err)
+			return
+		}
+
+		console.log('download success !')
+
+	})
+}
