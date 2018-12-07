@@ -1,3 +1,48 @@
 #!/usr/bin/env node
 
- console.log('fes list')
+const request = require('request')
+const ora = require('ora')
+const chalk = require('chalk')
+
+console.log()
+process.on('exit', () => {
+	console.log()
+})
+
+// fetch git repos for feseed
+
+const params = {
+	url: 'https://api.github.com/users/feseed/repos',
+	headers: {
+		'User-Agent': 'feseed-cli'
+	}
+}
+
+actionFetch(params)
+
+function actionFetch (params) {
+	const spinner = ora('loading ... ')
+	spinner.start()
+
+	request(params, (err, res, body) => {
+		spinner.stop()
+		if (err) {
+			console.error(err)
+			return
+		}
+	
+		const resBody = JSON.parse(body)
+		if (Array.isArray(resBody)) {
+			console.log('  Available fe-seed templates:')
+			console.log()
+			resBody.forEach(repo => {
+				console.log(
+					'  ' + chalk.yellow('★') +
+					'  ' + chalk.blue(repo.name) +
+					' - ' + repo.description)
+			})
+		} else {
+			console.error(resBody.message)
+		}
+	})
+}

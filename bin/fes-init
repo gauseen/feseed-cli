@@ -47,7 +47,7 @@ if (!rawName) {
 
 // git 仓库下载地址
 const officialTemplate = 'feseed/' + template
-const localUrl = path(process.cwd(), rawName)
+const localUrl = path.join(process.cwd(), rawName)
 
 console.log()
 process.on('exit', () => {
@@ -60,6 +60,7 @@ actionDownloadFESeed(officialTemplate)
 function actionDownloadFESeed (downloadUrl) {
 	const spinner = ora('downloading FE seed')
 	spinner.start()
+	console.log('localUrl: ', localUrl)
 	download(downloadUrl, localUrl, {}, err => {
 		spinner.stop()
 		if (err) {
@@ -67,7 +68,7 @@ function actionDownloadFESeed (downloadUrl) {
 			return
 		}
 
-		console.log('download success !')
+		console.log('download success!')
 
 	})
 }
