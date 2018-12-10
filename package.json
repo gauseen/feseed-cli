@@ -1,6 +1,6 @@
 {
   "name": "feseed-cli",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Front-end seed project cli",
   "bin": {
     "fes": "./bin/fes",
@@ -9,6 +9,21 @@
   },
   "author": "gauseen",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gauseen/feseed-cli.git"
+  },
+  "keywords": [
+    "FE",
+    "seed",
+    "cli",
+    "template",
+    "spa"
+  ],
+  "bugs": {
+    "url": "https://github.com/gauseen/feseed-cli/issues"
+  },
+  "homepage": "https://github.com/gauseen/feseed-cli#readme",
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.19.0",
