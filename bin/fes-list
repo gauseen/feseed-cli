@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const program = require('commander')
 const request = require('request')
 const ora = require('ora')
 const chalk = require('chalk')
@@ -9,10 +10,16 @@ process.on('exit', () => {
 	console.log()
 })
 
+program.parse(process.argv)
+
 // fetch git repos for feseed
 
+let [ username ] = program.args
+let gitUserName = username || 'feseed'
+let url = `https://api.github.com/users/${gitUserName}/repos`
+
 const params = {
-	url: 'https://api.github.com/users/feseed/repos',
+	url,
 	headers: {
 		'User-Agent': 'feseed-cli'
 	}

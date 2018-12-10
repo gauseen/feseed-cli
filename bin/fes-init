@@ -6,6 +6,8 @@ const chalk = require('chalk')
 const ora = require('ora')
 const path = require('path')
 
+const { fsExistsSync } = require('../lib/utils.js')
+
 /**
  * Usage.
  */
@@ -38,6 +40,11 @@ function help () {
 }
 help()
 
+console.log()
+process.on('exit', () => {
+	console.log()
+})
+
 let [ template, rawName ] = program.args
 
 if (!rawName) {
@@ -45,22 +52,36 @@ if (!rawName) {
 	return
 }
 
-// git 仓库下载地址
-const officialTemplate = 'feseed/' + template
 const localUrl = path.join(process.cwd(), rawName)
+const isExist = fsExistsSync(localUrl)
 
-console.log()
-process.on('exit', () => {
-	console.log()
-})
+function run () {
+	// 自定义自己模板
+	let downloadUrl = null
+	const isCustomTemplate = template.includes('/')
+	if (isCustomTemplate) {
+		downloadUrl = template
+	} else {
+		// feseed git 仓库项目下载地址
+		const officialTemplate = 'feseed/' + template
+		downloadUrl = officialTemplate
+	}
+	
+	if (isExist) {
+		console.log(
+			chalk.yellow(`  ${rawName} folder already exists!`)
+		)
+		return
+	}
+	// 开始下载前端种子项目
+	actionDownloadFESeed(downloadUrl)
+}
 
-// 开始下载前端种子项目
-actionDownloadFESeed(officialTemplate)
+run()
 
 function actionDownloadFESeed (downloadUrl) {
-	const spinner = ora('downloading FE seed')
+	const spinner = ora('downloading ... ')
 	spinner.start()
-	console.log('localUrl: ', localUrl)
 	download(downloadUrl, localUrl, {}, err => {
 		spinner.stop()
 		if (err) {
